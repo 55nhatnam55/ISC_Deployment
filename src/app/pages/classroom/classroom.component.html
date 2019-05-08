@@ -1,0 +1,133 @@
+<h2>Class Room</h2>
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Information Room</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form>
+        <div class="container-fluid">
+            <div class="box-body">
+                <input id="id" hidden />
+                <div class="row" style="margin-bottom:30px;">
+                    <div class="col-md-1">
+                        <a class="btn btn-success" (click)="showModal($event,modalAdd)"><i class="fa fa-plus"></i> <span>Add New Class Room</span></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <ngb-alert *ngIf="message" type="success" (close)="message = null">{{ message }}</ngb-alert>
+                    <table [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" datatable class="display" >
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Name</th>
+                                <th>Capacity</th>
+                                <th>Date added</th>
+                                <th>Added Person</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <tr *ngFor="let row of classrooms; let i = index">
+                                <td>{{i+1}} </td>
+                                <td>{{row.name}}</td>
+                                <td>{{row.capacity}}</td>
+                                <td>{{row.dateadded | date : 'dd-MM-yyyy' }}</td>
+                                <td>{{row.person}}</td>
+                                <td>
+                                    <a class="edit" (click)="showModal($event,modalAdd,row.id)"><i class="fa fa-pencil-square-o" data-toggle="tooltip" title="" data-original-title="Edit"></i></a>
+                                    <a  class="delete" (click)="showModal($event,modalDelete,row.id)" style="margin-left: 20px;"><i class="fa fa-trash-o" data-toggle="tooltip" title="" data-original-title="Delete"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Add, Edit-->
+<div bsModal #modalAdd="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 id="dialog-sizes-name1" class="modal-title">{{classroom.id === undefined || classroom.id === 0 ? 'Add New' : 'Edit'}} Class Room</h4>
+                  <button type="button" class="close pull-right" (click)="modalAdd.hide()" aria-label="Close">
+                    <span aria-hidden ="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputRoomName">Name </label>
+                        <input type="text" class="form-control" id="inputRoomName" [(ngModel)]="classroom.name" >
+                        <label for="inputCapacity">Capacity</label>
+                        <input type="number" class="form-control" id="inputCapacity" [(ngModel)]="classroom.capacity"  min="1" max="200" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" (click)="save()" value="{{classroom.id === undefined || classroom.id === 0 ? 'Add' : 'Save'}}">
+                    <input type="submit" class="btn btn-default" (click)="modalAdd.hide()"  value="Cancel">
+                </div>
+              </div>
+            </div>
+          </div>
+<!-- Delete Modal HTML -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Class Room</h4>
+                    <button type="button" class="close" (click)="modalDelete.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete these Records?</p>
+                    <p class="text-warning"><small>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" (click)="modalDelete.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="submit" (click)="delete($event,classroom.id)" class="btn btn-danger" value="Delete">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div bsModal #modalMessage="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Message</h4>
+                    <button type="button" class="close" (click)="modalMessage.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-warning">Data can be null!</p>
+                    <p class="text-bold">Please Fill all item.</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" (click)="modalMessage.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div bsModal #modalMessageError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" (click)="modalMessageError.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-warning">{{messageError}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" (click)="modalMessageError.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

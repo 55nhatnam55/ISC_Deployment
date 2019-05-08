@@ -1,0 +1,215 @@
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="col-md-4">
+                        <h3 class="box-title">Trainings Data Table</h3>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <a class="btn btn-success" (click)="showModal($event)">
+                            <i class="fa fa-plus"></i> <span>Add New</span>                       
+                        </a>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th  class="text-center">#</th>
+                                <th  class="text-center">Name</th>
+                                <th  class="text-center">Subjects</th>
+                                <th  class="text-center" style="width: 70px;">Duration (weeks)</th>
+                                <th style="width: 100px;"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of specializedTrainings; let i = index">
+                                <td class="text-center">{{ i + 1}}</td>
+                                <td>{{ item.name }}</td>
+                                <td>
+                                    <ul>
+                                        <li *ngFor="let row of item.listSubjects"> {{row.subjectname}}</li>
+                                    </ul>
+                                </td>
+                                <td>{{ item.numberofWeeks }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-default" (click)="showModal($event, item.trainingId)"><i class="fa fa-edit text-primary"></i></button>
+                                    <button class="btn btn-default" (click)="showDeleteModal($event, item.trainingId)"><i class="fa fa-trash-o text-danger"></i></button> 
+                                </td>
+                            </tr>              
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<form #frm="ngForm">
+<div bsModal #modal='bs-modal' class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" (click)="modal.hide()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{specializedTraining.trainingId === undefined || specializedTraining.trainingId === 0 ? 'Add New Training' : 'Edit training information'}}</h4>           
+                </div>
+                <div class="modal-body" style="margin-left: 1em;">
+                    <!-- <form #trainingForm="ngForm"> -->
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <input id="id" hidden />
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label for="lastName" class="col-sm-2 col control-label">Name</label>
+
+                                    <div class="col-8">
+                                        <input required 
+                                        [(ngModel)]="specializedTraining.name" 
+                                        type="text" class="form-control"
+                                        id="txtName" 
+                                        name="txtTrainingname"
+                                        #trainingName="ngModel" 
+                                        placeholder="Type training's name here ...">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-9 text-danger" *ngIf="trainingName.touched">
+                                            <div *ngIf="trainingName.errors?.required">
+                                                Training name required!
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label for="gender" class="col-sm-4 col control-label">Duration </label>
+
+                                    <div class="col-8">
+                                        <input
+                                         required [(ngModel)]="specializedTraining.numberofWeeks" 
+                                         type="number" class="form-control col-xs-6" 
+                                         id="txtNumber" 
+                                         style="border: 1px solid #ccc; width: 30%"
+                                         #duration="ngModel" 
+                                         min="5"
+                                         max="99"
+                                         type="text" 
+                                         name="txtDuration" >
+                                        <span class="col" style="margin-left: 0.75em">week(s)</span>
+                                    </div>
+                                    <div class="row">
+                                            <div class="col-md-9 text-danger" *ngIf="duration.touched">
+                                              <div *ngIf="duration.errors?.required">Duration required!</div></div>
+                                            <div class="col-md-3"></div>
+                                          <div class="row">
+                                            <div class="col-md-9 text-danger" *ngIf="duration.touched">
+                                              <div [hidden]="!duration?.hasError('min')">Invalid! Min duration is 5 weeks</div>
+                                            </div>
+                                            <div class="col-md-9 text-danger" *ngIf="duration.touched">
+                                                <div [hidden]="!duration?.hasError('max')">Invalid! Max duration is 99 weeks</div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row" style="margin-top: 8rem;">
+                            <div class="col-12">
+                                <label>LIST OF SUBJECTS SELECTED</label>
+                                <table id="subjectsSelectedTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Subject's Name</th>
+                                            <th>Number of Lessions</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dataSubjectsSelectedTable">
+                                        <tr *ngFor="let item of selectedSubjects; let i = index">
+                                            <td>{{ i + 1}}</td>
+                                            <td>{{item.subjectname}}</td>
+                                            <td>{{item.numberlesson}}</td>
+                                            <td class="text-center">
+                                                <button class="fa fa-trash-o btn btn-danger" (click)="removeFromSelectedSubjects(i)"></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <label>LIST OF SUBJECTS</label>
+                        <table id="subjectsTable" class="table table-bordered table-hover">                           
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Subject's Name</th>
+                                    <th>Number of Lessions</th>
+                                    <th></th>   
+                                </tr>
+                            </thead>
+                            <tbody id="dataSubjectsTable">
+                                <tr *ngFor="let item of subjects; let i = index">
+                                    <td>{{i + 1}}</td>
+                                    <td>{{item.subjectname}}</td>
+                                    <td>{{item.numberlesson}}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-success" (click)="checkSelectedSubject(item.subjectId)"><i class="fa fa-plus text-default"></i></button>
+                                    </td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- </form> -->
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-eraser" aria-hidden="true"></i>Clear</button> -->
+                    <input 
+                        type="submit" 
+                        class="btn btn-success" 
+                        (click)="save()" [disabled]="frm.invalid"
+                        value="{{specializedTraining.trainingId === undefined || specializedTraining.trainingId === 0 ? 'Add' : 'Update'}}"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Confirm</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="deleteModal.hide()">No</button>
+          <button type="button" (click)="delete($event)" class="btn btn-danger">Yes</button>
+        </div>
+      </div>
+  </div>
+</div>

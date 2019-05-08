@@ -1,0 +1,136 @@
+<h2>Learning Result</h2>
+<div class="box box-info">
+  <div class="box-header with-border">
+    <h3 class="box-title">Select option</h3>
+  </div>
+  <!-- /.box-header -->
+  <!-- form start -->
+  <form>
+    <div class="container-fluid">
+      <div class="box-body">
+        <input id="id" hidden />
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Course</label>
+              <select class="form-control" id="drdownCourse" [ngModel]="course.courseId" (ngModelChange)="onChangeCourse($event)"
+                name="courseid">
+                <option *ngFor="let option of courses" [ngValue]="option.courseId">{{option.name}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select Class</label>
+              <select class="form-control" id="drdownClass" [ngModel]="classe.id" (ngModelChange)="onChangeClasses($event)"
+                name="classid">
+                <option *ngFor="let option of classes" [ngValue]="option.id">{{option.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <br />
+              <button type="button" class="btn btn-info" (click)="search()" style="margin-top:5px;">
+                <span class="glyphicon glyphicon-search"></span> Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="box">
+  <div class="box-header with-border">
+    <h3 class="box-title">Student Table</h3>
+  </div>
+  <!-- /.box-header -->
+  <!-- form start -->
+  <form>
+    <div class="container-fluid">
+      <div class="box-body">
+        <input id="id" hidden />
+        <div class="row">
+          <ngb-alert *ngIf="message" type="success" (close)="message = null">{{ message }}</ngb-alert>
+          <table [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" datatable class="display">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Class name</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Day of birth</th>
+                <th>Average score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of learnResults; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{row.className}}</td>
+                <td>{{row.firstName}}</td>
+                <td>{{row.lastName}}</td>
+                <td>{{row.doB | date : 'dd-MM-yyyy'}}</td>
+                <td>{{row.avgscore}}<a class="edit" (click)="showModalEdit($event,row.id)" style="margin-left:20px;" ><i class="fa fa-pencil-square-o"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Modal HTML -->
+<div bsModal #modalEdit="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title"> Edit Result</h4>
+        <button type="button" class="close pull-right" (click)="modalEdit.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="inputClassName">Class Name </label>
+          <input type="text" disabled="disabled" class="form-control" id="inputClassName" [(ngModel)]="classe.name">
+          <label for="inputFirstName">First Name</label>
+          <input type="text" disabled="disabled" class="form-control" id="inputFirstName" [(ngModel)]="user.firstname">
+          <label for="inputLastName">Last Name</label>
+          <input type="text" disabled="disabled" class="form-control" id="inputLastName" [(ngModel)]="user.lastname">
+          <label for="inputDob">Date of birth</label>
+          <input type="text" disabled="disabled" class="form-control" id="inputDob" [(ngModel)]="user.dob">
+          <label for="inputScore">Score</label>
+          <input type="number" class="form-control" id="inputScore" [(ngModel)]="learn.avgscore" min="0" max="10">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" class="btn btn-success" (click)="save()" value="Save">
+        <input type="submit" class="btn btn-default" (click)="modalEdit.hide()" value="Cancel">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #modalMessage="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <div class="modal-header">
+          <h4 class="modal-title">Message</h4>
+          <button type="button" class="close" (click)="modalMessage.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-warning">Data not found!</p>
+          <p class="text-bold">Please selected Course and Class.</p>
+        </div>
+        <div class="modal-footer">
+          <input type="button" (click)="modalMessage.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

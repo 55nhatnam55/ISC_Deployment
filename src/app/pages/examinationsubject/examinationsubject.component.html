@@ -1,0 +1,94 @@
+<h3><strong><i class="fa fa-outdent"></i> Examination Subjects</strong></h3>
+<div class="box box-success">
+    <div class="box-body">
+      <div class="row">
+          <div class="col-md-10">
+              <div class="alert alert-dismissible" role="alert" style="background-color: rgb(184, 218, 184);">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Add new examination subjects</strong> for entrance tests.
+                </div>
+          </div>
+          <div class="col-md-2">
+              <div class="text-right">
+                  <button type="button" class="btn btn-success" (click)="showModal()"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+              </div>
+          </div>
+      </div>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+      <strong><h5 class="panel-title">Examination Subjects Data</h5></strong>
+    </div>
+    <div class="panel-body">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+          <thead>
+            <tr>
+              <th>Examination Subject Name</th>
+              <th style="width: 70px;">Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of examinationsubjects">
+              <td>{{row.name}}</td>
+              <td>
+                <div class="row">
+                  <div class="col-md-5">
+                    <button class="btn btn-success" (click)="showModal($event, row.id)"><i class="fa fa-edit"></i></button>
+                  </div>
+                  <div class="col-md-7">
+                    <button class="btn btn-danger" (click)="showDeleteModal($event, row.id)"><i class="fa fa-trash text-dark" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Confirm</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p> You want to delete this subject ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="deleteModal.hide()">Cancel</button>
+          <button type="button" (click)="delete()" class="btn btn-success">OK</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">{{examinationsubject.id  === undefined ? 'Add New Examination Subject' : 'Edit Examination Subject'}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label class="col-sm-5 col-form-label" style="margin-top: 7px;">Examination Subject Name <span style="color: red">*</span></label>
+          <div class="col-sm-7">
+              <input type="text" class="form-control" [(ngModel)]="examinationsubject.name" placeholder="Enter Name">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.hide()">Cancel</button>
+        <button type="button" (click)="save()" class="btn btn-success">{{ (examinationsubject.id === undefined || examinationsubject.id === 0) ? 'Add':'Save'}}</button>
+      </div>
+    </div>
+  </div>
+</div>

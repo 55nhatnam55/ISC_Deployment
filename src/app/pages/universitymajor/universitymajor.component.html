@@ -1,0 +1,158 @@
+<div class="row">
+    <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+  <div class="col-lg-6 col-md-6">
+      <div class="box">
+          <div class="box-header with-border">
+              <h3 class="box-title">University Table</h3>
+              <button type="button" class="btn btn-success pull-right" (click)="showModal('university', uniForm)"><i class="fa fa-plus"></i> <span>Add new university</span></button>      
+          </div>
+          <div class="box-body">
+              <table id="uniDatatable" [dtOptions]="dtOptions[0]" [dtTrigger]="dtTriggers[0]" datatable class="row-border hover">
+                  <thead>
+                        <tr>
+                            <th>
+                                <p>No</p>
+                            </th>
+                            <th>
+                                <p>University Name</p>
+                            </th>                              
+                            <th>
+                
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <tr *ngFor="let u of universities; let i=index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ u.name }}</td>
+                        <td>                    
+                            <a href="#" (click)="showModal('university', uniForm, $event, u.id)"><i class="fa fa-edit text-primary"></i></a>
+                        </td>
+                        <td>                    
+                            <a href="#" (click)="showDeleteModal('university', $event, u.id)"><i class="fa fa-remove text-danger"></i></a>
+                        </td>
+                    </tr>              
+                  </tbody>
+              </table>
+            </div>
+        </div>
+                          
+    <div bsModal #uniModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">University</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="uniModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form #uniForm="ngForm">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">University name</label>
+                <div class="col-sm-9">
+                  <input required type="text" class="form-control" [(ngModel)]="university.name" name="name" placeholder="name">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" (click)="save('university')" class="btn btn-success">{{ (university.id === undefined || university.id === 0) ? 'Add':'Save'}}</button>
+          </div>
+        </div>
+      </div>             
+    </div>     
+  </div>
+  <div class="col-lg-6 col-md-6">
+      <div class="box">
+          <div class="box-header with-border">
+              <h3 class="box-title">Major Table</h3>
+              <button type="button" class="btn btn-success pull-right" (click)="showModal('major', majorForm)"><i class="fa fa-plus"></i> <span>Add new major</span></button>      
+          </div>
+          <div class="box-body">
+              <table id="majorDatatable" [dtOptions]="dtOptions[1]" [dtTrigger]="dtTriggers[1]" datatable class="row-border hover">
+                  <thead>
+                        <tr>
+                            <th>
+                                <p>No</p>
+                            </th>
+                            <th>
+                                <p>Major Name</p>
+                            </th>
+                            <th>
+                
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <tr *ngFor="let m of majors; let i=index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ m.name }}</td>
+                        <td>                    
+                            <a href="#" (click)="showModal('major', majorForm, $event, m.id)"><i class="fa fa-edit text-primary"></i></a>
+                        </td>
+                        <td>                    
+                            <a href="#" (click)="showDeleteModal('major', $event, m.id)"><i class="fa fa-remove text-danger"></i></a>
+                        </td>
+                    </tr>              
+                  </tbody>
+              </table>
+            </div>
+        </div>
+
+    <div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">Confirm</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p hidden #object></p>
+            <p>Are you sure you want to delete?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light btn-cancel" (click)="deleteModal.hide()">Cancel</button>
+            <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div bsModal #majorModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">Major</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="majorModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form #majorForm="ngForm">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Major name</label>
+                <div class="col-sm-9">
+                  <input required type="text" class="form-control" [(ngModel)]="major.name" name="name" placeholder="name">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" (click)="save('major')" class="btn btn-success">{{ (major.id === undefined || major.id === 0) ? 'Add':'Save'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>

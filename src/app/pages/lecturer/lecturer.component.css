@@ -1,0 +1,16 @@
+.btn-cancel {
+    float: left !important;
+}
+.options-width {
+    width: 20px;
+}
+
+.ng-valid[required], .ng-valid.required  {
+    border-left: 5px solid #42A948;
+  }
+  
+  .ng-invalid:not(form)  {
+    border-left: 5px solid #a94442;
+  }
+
+  

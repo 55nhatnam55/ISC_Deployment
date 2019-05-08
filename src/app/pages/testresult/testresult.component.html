@@ -1,0 +1,170 @@
+<h3><strong><i class="fa fa-graduation-cap"></i> Test Results</strong></h3>
+<div class="box box-success">
+  <div class="box-body">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="alert alert-dismissible" role="alert" style="background-color: rgb(184, 218, 184);">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Search for Entrance Test</strong> select by course or select by test date
+              </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" style="margin-left: 30px; margin-top: 10px;">
+            <div class="form-group">
+                <label for="Search Entrance">Course</label>
+                <select class="form-control" id="drdownCourse" [ngModel]="course.courseId" (ngModelChange)="onChangeCourse($event)" name="courseid">
+                  <option hidden >Select Course</option>  
+                  <option *ngFor="let item of courses" [ngValue]="item.courseId">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-4" style="margin-left: 43px; margin-top: 10px;">
+            <div class="form-group row">
+                <label for="Seach Test Date" >Test Date</label>
+                  <select class="form-control" id="drdownEntranceTest" [ngModel]="entrancetest.id" (ngModelChange)="onChangeEntranceTest($event)" name="entrancetestid">
+                    <option hidden >Select Test Date</option>
+                    <option *ngFor="let item of entrancetests" [ngValue]="item.id">{{item.testdate | date : 'dd-MM-yyyy'}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-3" style="margin-top : 34px;">
+              <button class="btn btn-info" (click)="search()"><i class="fa fa-search"></i>&ensp;Search</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+      <strong><h5 class="panel-title">Test Results Data</h5></strong>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+          <div class="col text-right" style="margin-bottom: 20px; margin-right : 20px;">
+              <button type="button" class="btn btn-success" (click)="showModal()"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+            </div>
+        </div>
+        
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <thead>
+              <br>
+              <tr>
+                <th>User Name</th>
+                <th>Subject Name</th>
+                <th>Entrance Test</th>
+                <th>Score</th>
+                <th>Is Passing</th>
+                <th style="width: 70px;">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of testresults">
+                <td>{{row.firstName}} {{row.lastName}}</td>
+                <td>{{row.subjectName}}</td>
+                <td>{{row.courseName}} ─ {{row.testDate | date : 'dd-MM-yyyy'}}</td>
+                <td>{{row.score}}</td>
+                <td>{{row.score >= 6 ? 'Pass':'Fail'}}</td>
+                <td>
+                  <div class="row">
+                    <div class="col-md-5">
+                      <button class="btn btn-success" (click)="showModal($event, row.testResultId)"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div class="col-md-7">
+                      <button class="btn btn-danger" (click)="showDeleteModal($event, row.testResultId)"><i class="fa fa-trash text-dark" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
+
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Confirm</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p> You want to delete this test result ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="deleteModal.hide()">Cancel</button>
+          <button type="button" (click)="delete()" class="btn btn-success">OK</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">{{testresult.testResultId  === undefined ? 'Add New Test Result' : 'Edit Test Result'}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label class="col-sm-5 col-form-label" style="margin-top: 7px;">Course Name <span style="color: red">*</span> </label>
+          <div class="col-sm-7">
+              <select class="form-control" id="drdownCourse" [ngModel]="course.courseId" (ngModelChange)="onChangeCourse($event)" name="courseid">
+                  <option hidden >Select Course</option>  
+                  <option *ngFor="let item of courses" [ngValue]="item.courseId">{{item.name}}</option>
+                </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label" style="margin-top: 7px;">Course Name <span style="color: red">*</span> </label>
+            <div class="col-sm-7">
+                <select class="form-control" id="drdownEntranceTest" [ngModel]="entrancetest.id" (ngModelChange)="onChangeEntranceTest($event)" name="entrancetestid">
+                    <option hidden >Select Test Date</option>
+                    <option *ngFor="let item of entrancetests" [ngValue]="item.id">{{item.testdate | date : 'dd-MM-yyyy'}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label" style="margin-top: 7px;">User Name <span style="color: red">*</span> </label>
+            <div class="col-sm-7">
+              <select class="form-control" id="drdownUser" [ngModel]="user.id" (ngModelChange)="onChangeUser($event)" name="userid">
+                <option hidden >Select User</option>
+                <option *ngFor="let item of users" [ngValue]="item.userID">{{item.firstname}} {{item.lastname}}</option>
+            </select>
+            </div>
+          </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label" style="margin-top: 7px;">Subject Name <span style="color: red">*</span> </label>
+            <div class="col-sm-7">
+              <select class="form-control" id="drdownSubject" [ngModel]="examinationsubject.id" (ngModelChange)="onChangeSubject($event)" name="examinationsubjectid">
+                <option hidden >Select Subject</option>
+                <option *ngFor="let item of examinationsubjects" [ngValue]="item.id">{{item.name}}</option>
+            </select>
+            </div>
+          </div>
+        
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label" style="margin-top: 7px;">Score <span style="color: red">*</span> </label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" [(ngModel)]="testresult.score" placeholder="Enter Score">
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.hide()">Cancel</button>
+        <button type="button" (click)="save()" class="btn btn-success">{{ (testresult.testResultId === undefined || testresult.testResultId === 0) ? 'Add':'Save'}}</button>
+      </div>
+  </div>
+</div>

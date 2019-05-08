@@ -1,0 +1,199 @@
+<link rel="stylesheet" href="/assets/css/dataTables.min.css" />
+<h2>Admin</h2>
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Information</h3>
+        <button class="btn btn-success pull-right" (click)="showModal($event)"><i class="fa fa-plus"></i> <span>Add New Admin</span></button>
+
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form>
+        <div class="container-fluid">
+            <div class="box-body">
+                <input id="id" hidden />
+                <div class="row">
+                    <!-- <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert> -->
+
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover table-striped">
+                      <thead>
+                        <tr>
+                          <th class="text-center">No.</th>
+                          <th class="text-center">Username</th>
+                          <th class="text-center">Name</th>
+                          <th class="text-center">Image</th>
+                          <th style="width: 80px;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let row of admins; let i = index">
+                          <th class="text-center">{{i + 1}}</th>
+                          <td>{{row.username}}</td>
+                          <td>{{row.fullname}}</td>
+                          <td>{{row.imageName}}</td>
+                          <td class="text-center"> 
+                              <button class="btn btn-default" (click)="showModal($event, row.adminid)"><i class="fa fa-edit text-primary"></i></button>
+                              <button class="btn btn-default" (click)="showDeleteModal($event, row.adminid)"><i class="fa fa-trash-o text-danger"></i></button> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Add, Edit-->
+<form #frm="ngForm" enctype = "multipart/form-data" method="POST">
+        <div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 id="dialog-sizes-name1" class="modal-title">{{admin.adminid === undefined || admin.adminid === 0 ? 'Add new Admin' : 'Edit Admin information'}}</h4>
+                  <!-- <button type="button" class="close pull-right" (click)="modal.hide()" aria-label="Close">
+                    <span aria-hidden ="true">&times;</span>
+                  </button> -->
+                </div>
+                <div class="modal-body">
+                  <!-- txtUsername -->
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                      <label for="txtName">Username</label>
+                    </div>
+                    <div class="col-md-9">
+                      <input required #txtUsername="ngModel" type="text" name="Username" class="form-control" id="txtUsername" placeholder="Enter username" [(ngModel)]="admin.username"/>
+                      <div class="row">
+                          <div class="col-md-9 text-danger" *ngIf="txtUsername.touched">
+                              <div *ngIf="txtUsername.errors?.required">Username is required!</div>
+                          </div>
+                          <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                  </div>
+                  <!-- /txtUsername -->
+                  <!-- txtPassword -->
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                      <label for="txtPassword">Password</label>
+                    </div>
+                    <div class="col-md-9">
+                      <input 
+                      required 
+                      #txtPassword="ngModel"
+                      minlength="6"
+                      type="password" 
+                      name="Password" 
+                      class="form-control" 
+                      id="txtPassword" 
+                      placeholder="Enter password" 
+                      [(ngModel)]="admin.password"
+                      >
+                      <div class="row">
+                        <div class="col-md-9 text-danger" *ngIf="txtPassword.touched">
+                          <div *ngIf="txtPassword.errors?.required">Password is required!</div></div>
+                        <div class="col-md-3"></div></div>
+                      <div class="row">
+                        <div class="col-md-9 text-danger" *ngIf="txtPassword.touched">
+                          <div [hidden]="!txtPassword?.hasError('minlength')">Invalid! Password min length is 6 letters</div></div>
+                        <div class="col-md-3"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /txtPassword -->
+                  <!-- txtConfirmPassword -->
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                      <label for="txtConfirmPassword">Confirm Password</label>
+                    </div>
+                    <div class="col-md-9">
+                      <input 
+                          required 
+                          #txtConfirmPassword="ngModel"
+                          minlength="6"
+                          type="password" 
+                          name="ConfirmPassword" 
+                          class="form-control" 
+                          id="txtConfirmPassword" 
+                          placeholder="Enter password" 
+                          [(ngModel)]="confirm_password"
+                      >
+                      <div class="row">
+                        <div class="col-md-9 text-danger" *ngIf="txtConfirmPassword.touched">
+                          <div *ngIf="txtConfirmPassword.errors?.required">Confirm Password is required!</div></div>
+                        <div class="col-md-3"></div></div>
+                      <div class="row">
+                        <div class="col-md-9 text-danger" *ngIf="txtConfirmPassword.touched">
+                          <div [hidden]="!txtConfirmPassword?.hasError('minlength')">Invalid! Confirm Password min length is 6 letters</div></div>
+                        <div class="col-md-3"></div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-9 text-danger" *ngIf="txtConfirmPassword.touched">
+                          <div id='message'></div></div>
+                        <div class="col-md-3"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /txtConfirmPassword -->
+                  <!-- txtName -->
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                      <label for="txtName">Name</label>
+                    </div>
+                    <div class="col-md-9">
+                      <input required #txtName="ngModel" type="text" name="Name" class="form-control" id="txtName" placeholder="Enter Name" [(ngModel)]="admin.fullname">
+                      <div class="row">
+                          <div class="col-md-9 text-danger" *ngIf="txtName.touched">
+                              <div *ngIf="txtName.errors?.required">Name is required!</div>
+                          </div>
+                          <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                  </div>
+                  <!-- /txtName -->
+                  
+                  <!-- imageFile -->
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                        <label for="selectImage">Image</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="file" class="form-control" id="Image" placeholder="Choose image" (change)="handleFileInput($event.target.files)">
+                      </div>
+                  </div>
+                  <!-- /imageFile -->
+                </div>
+                <div class="modal-footer">
+                    <input 
+                    type="submit" 
+                    class="btn btn-success" 
+                    (click)="save()" 
+                    [disabled]="frm.invalid"
+                    value="{{admin.adminid === undefined || admin.adminid === 0 ? 'Add' : 'Update'}}">
+                    <input type="button" class="btn btn-default" (click)="modal.hide()"  value="Cancel">
+                </div>
+              </div>
+            </div>
+          </div>
+</form>
+<!-- Delete Modal HTML -->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Admin</h4>
+                    <!-- <button type="button" class="close" (click)="deleteModal.hide()" data-dismiss="modal" aria-hidden="true">×</button> -->
+                </div>
+                <div class="modal-body">
+                    <p class="text-warning">Are you sure you want to delete this Record?</p>
+                    <!-- <p class="text-warning"><small>This action cannot be undone.</small></p> -->
+                </div>
+                <div class="modal-footer">
+                    <button (click)="delete(admin.adminid)" class="btn btn-danger">Delete</button>
+                    <button (click)="deleteModal.hide()" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

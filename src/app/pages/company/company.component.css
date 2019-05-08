@@ -1,0 +1,2 @@
+input:invalid { border: 1px solid #f00; }
+input:valid { border: 1px solid #000; }

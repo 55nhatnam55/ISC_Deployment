@@ -1,0 +1,183 @@
+<section class="content">
+  <div class="row">
+      <div class="col-xs-12">
+          <div class="box">
+              <div class="box-header">
+                  <div class="col-md-4">
+                      <h3 class="box-title">Courses Data Table</h3>
+                  </div>
+                  <div class="col-md-8 text-right">
+                      <a class="btn btn-success" (click)="showModal($event)"><i class="fa fa-plus"></i><span> Add New</span>
+                      </a>
+                  </div>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                    <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-hover table-striped">
+                      <thead>
+                          <tr>
+                              <th class="text-center">#</th>
+                              <th class="text-center">Name</th>
+                              <th class="text-center">Start Date</th>
+                              <th class="text-center">End Date</th>
+                              <th class="text-center">Note</th>
+                              <th style="width: 100px;"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let row of courses; let i = index">
+                              <td class="text-center">{{ i + 1 }}</td>
+                              <td>{{row.name}}</td>                                
+                              <td>{{row.startdate | date : 'dd-MM-yyyy'}}</td>
+                              <td>{{row.enddate | date : 'dd-MM-yyyy'}}</td>
+                              <td>{{row.note}}</td>
+                              <td class="text-center">
+                                  <button class="btn btn-default" (click)="showModal($event, row.courseId)"><i class="fa fa-edit text-primary"></i></button>
+                                  <button class="btn btn-default" (click)="showDeleteModal($event, row.courseId)"><i class="fa fa-trash-o text-danger"></i></button>
+                              </td>
+                          </tr>
+                  </table>
+              </div>
+              <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.col -->
+  </div>
+  <!-- /.row -->
+</section>
+
+<form #frm="ngForm">
+    <div bsModal #modal='bs-modal' id="addCourse" class="modal fade" tabindex="-1"
+        role="dialog" aria-labelledby="dialog-sizes-name1">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+                <div class="modal-header">
+                      <button type="button" class="close" (click)="modal.hide()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                      <h4 class="modal-title">{{course.courseId === undefined || course.courseId === 0 ? 'Add new course' : 'Edit course information'}}</h4>
+                  </div>
+                  <div class="modal-body" style="margin-left: 1em;">
+                      <div class="row">
+                          <div class="col-md-6 col-sm-12">
+                              <input id="id" hidden="">
+                              <div class="row">
+                                  <div class="form-group col-sm-12">
+                                      <label for="txtName" class="col-sm-4 col control-label">Name</label>
+    
+                                      <div class="col-sm-10">
+                                          <input required #name="ngModel" [(ngModel)]="course.name" type="text" class="form-control" name="txtname" placeholder="Type course name here">
+                                      </div>
+                                      <div class="row">
+                                            <div class="col-md-9 text-danger" *ngIf="startdate.touched">
+                                              <div *ngIf="name.errors?.required">
+                                                Course name required!
+                                              </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="form-group col-sm-12">
+                                      <label for="gender" class="col-sm-6 col control-label">Start date </label>
+    
+                                      <div class="input-group date col-xs-12 col-md-10" style="margin-left: 1em;">
+                                          <div class="input-group-addon">
+                                              <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input required #startdate="ngModel" [(ngModel)]="course.startdate" type="date" class="form-control" name="txtStartdate" id="datepicker">
+                                      </div>
+                                      <div class="row">
+                                            <div class="col-md-9 text-danger" *ngIf="enddate.touched">
+                                              <div *ngIf="startdate.errors?.required">
+                                                Start date required!
+                                              </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="form-group col-sm-12">
+                                      <label for="gender" class="col-sm-6 col control-label">End date </label>
+    
+                                      <div class="input-group date col-xs-12 col-md-10" style="margin-left: 1em;">
+                                          <div class="input-group-addon">
+                                              <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input required #enddate="ngModel" [(ngModel)]="course.enddate" type="date" class="form-control" name="txtEnddate" id="datepicker">
+                                      </div>
+                                      <div class="row">
+                                            <div class="col-md-9 text-danger" *ngIf="note.touched">
+                                              <div *ngIf="enddate.errors?.required">
+                                                End date required!
+                                              </div>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="form-group col-sm-12">
+                                      <label for="gender" class="col-sm-4 col control-label">Note</label>
+    
+                                      <div class="col-sm-10">
+                                          <div class="">
+                                              <textarea #note="ngModel" name="txtNote" [(ngModel)]="course.note" id="editor1" rows="0" cols="0" style="margin: 0px; width: 20em; height: 10em;"> Type your note here
+                                            </textarea>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- <div class="col-xs-12 col-md-6">
+                              <div class="row">
+                                  <label for="lastName" class="col-sm-12 control-label">Choose specialized trainings <i>(multiple)</i></label>
+    
+                                  <div class="col-xs-12 col-md-10">
+                                      <div class="form-group">
+                                          <select class="form-control select2" multiple="multiple" data-placeholder="Select a training" id="selectTrainingsinModal" style="width: 100%;">                                              
+                                            <option *ngFor="let item of trainings" [value]="item.trainingId">{{item.name}}</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>  -->
+                        </div>                    
+                        <div class="modal-footer">
+                          <input 
+                          type="submit" 
+                          class="btn btn-success" 
+                          (click)="save()" [disabled]="frm.invalid"
+                          value="{{course.courseId === undefined || course.courseId === 0 ? 'Add' : 'Update'}}"
+                            />                      
+                        </div>
+                </div>
+            </div>
+        </div> 
+    </div>   
+</form>
+
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">Confirm</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="deleteModal.hide()">No</button>
+          <button type="button" (click)="delete($event)" class="btn btn-danger">Yes</button>
+        </div>
+      </div>
+  </div>
+</div>

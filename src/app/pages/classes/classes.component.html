@@ -1,0 +1,191 @@
+<h2>Classes</h2>
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Information Classes</h3>
+    </div>
+    <form>
+        <div class="container-fluid">
+            <div class="box-body">
+                <input id="id" hidden />
+                <div class="row" style="margin-bottom:30px;">
+                    <div class="col-md-1">
+                        <a class="btn btn-success" (click)="showModalAdd($event)"><i class="fa fa-plus"></i> <span>Add New Class</span></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <ngb-alert *ngIf="message" type="success" (close)="message = null">{{ message }}</ngb-alert>
+                    <table [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" datatable class="display" >
+                        <thead>
+                            <tr>
+                                <th>No. </th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Subject</th>
+                                <th>Percent banned test</th>
+                                <th>Passing score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <tr *ngFor="let row of classeFull ; let i = index">
+                                <td>{{i+1}}</td>
+                                <td >{{row.name}}</td>
+                                <td>{{row.course.name}}</td>
+                                <td>{{row.subject.subjectname}}</td>
+                                <td style="margin-left: 50px">{{row.percentBan}}</td>
+                                <td style="margin-left: 50px">{{row.passingscore}}</td>
+                                <td>
+                                    <a class="edit" (click)="showModalEdit($event,row.id)"><i class="fa fa-pencil-square-o"  title=""></i></a>
+                                    <a  class="delete" (click)="showModalDelete($event,row.id)"  style="margin-left: 20px;"><i class="fa fa-trash-o"title=""></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Add-->
+<div bsModal #modalAdd="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-sizes-name1" class="modal-title">Add Class</h4>
+          <button type="button" class="close pull-right" (click)="modalAdd.hide()" aria-label="Close">
+            <span aria-hidden ="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="inputRoomNameNew">Name </label>
+                <input type="text" class="form-control" id="inputRoomNameNew" name="inputRoomNameNew" [(ngModel)]="classe.name" >
+
+                <label for="inputBannedNew">Percent banned test</label>
+                <input type="number" class="form-control" id="inputbannedNew" name="inputbannedNew" [(ngModel)]="classe.percentBan"  min="0" max="100" >
+                
+                <label for="inputPassingNew">Passing score</label>
+                <input type="number" class="form-control" id="inputPassingNew" name="inputPassingNew" [(ngModel)]="classe.passingscore"  min="1" max="10" >
+             
+                <label for="inputCourseNew">Select Course</label>
+                <select class="form-control" id="drdownCourseNew" [ngModel]="classe.courseid" (ngModelChange)="onChangeCourse($event)" name="courseidNew"> 
+                     <option *ngFor="let option of courses" [ngValue]="option.courseId" selected>{{option.name}}</option>
+                </select> 
+
+                 <label for="inputSubjectNew">Select Subject</label>
+                <select class="form-control" id="drdownSubjectNew" [ngModel]="classe.subjectid" (ngModelChange)="onChangeSubject($event)" name="subjectidNew">
+                     <option *ngFor="let option of subjects" [ngValue]="option.subjectId" selected>{{option.subjectname}}</option>
+                </select>
+               </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-success" (click)="save()" value="Add">
+            <input type="submit" class="btn btn-default" (click)="modalAdd.hide()"  value="Cancel">
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal Edit-->
+<div bsModal #modalEdit="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 id="dialog-sizes-name1" class="modal-title">Edit Class</h4>
+                  <button type="button" class="close pull-right" (click)="modalEdit.hide()" aria-label="Close">
+                    <span aria-hidden ="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputRoomName">Name </label>
+                        <input type="text" class="form-control" id="inputRoomName" name="inputRoomName" [(ngModel)]="classe.name" >
+
+                        <label for="inputBanned">Percent banned test</label>
+                        <input type="number" class="form-control" id="inputbanned" name="inputbanned" [(ngModel)]="classe.percentBan"  min="0" max="100" >
+                        
+                        <label for="inputPassing">Passing score</label>
+                        <input type="number" class="form-control" id="inputPassing" name="inputPassing" [(ngModel)]="classe.passingscore"  min="1" max="10" >
+                     
+                        <label for="inputCourse">Select Course</label>
+                        <select class="form-control" id="drdownCourse" [ngModel]="classe.courseid" (ngModelChange)="onChangeCourse($event)" name="courseid"> 
+                            <option [ngValue]="undefined" disabled  selected> {{course.name}} </option>
+                             <option *ngFor="let option of courses" [ngValue]="option.courseId" selected>{{option.name}}</option>
+                        </select> 
+
+                         <label for="inputSubject">Select Subject</label>
+                        <select class="form-control" id="drdownSubject" [ngModel]="classe.subjectid" (ngModelChange)="onChangeSubject($event)" name="subjectid"> 
+                             <option [ngValue]="undefined" disabled  selected> {{subject.subjectname}} </option> 
+                             <option *ngFor="let option of subjects" [ngValue]="option.subjectId" selected>{{option.subjectname}}</option>
+                        </select>
+                       </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" (click)="save()" value="Save">
+                    <input type="submit" class="btn btn-default" (click)="modalEdit.hide()"  value="Cancel">
+                </div>
+              </div>
+            </div>
+          </div>
+<!-- Delete Modal HTML -->
+<div bsModal #modalDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Class</h4>
+                    <button type="button" class="close" (click)="modalDelete.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete these Records?</p>
+                    <p class="text-warning"><small>This action cannot be undone.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" (click)="modalDelete.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input type="submit" (click)="delete($event,classe.id)" class="btn btn-danger" value="Delete">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Message -->
+<div bsModal #modalMessage="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Message</h4>
+                    <button type="button" class="close" (click)="modalMessage.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-warning">Data can be null!</p>
+                    <p class="text-bold">Please Fill all item.</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" (click)="modalMessage.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div bsModal #modalMessageError="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" (click)="modalMessageError.hide()" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-warning">{{messageError}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" (click)="modalMessageError.hide()" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

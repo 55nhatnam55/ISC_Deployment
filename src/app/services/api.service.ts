@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class ApiService {
 
   constructor() { }
-  baseUrl = 'https://localhost:44324/api/';
+  baseUrl = 'https://iscsystem.azurewebsites.net/api/';
   apiUrl = {
     academic: this.baseUrl + 'academics',
     admins: this.baseUrl + 'admins',

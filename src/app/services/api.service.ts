@@ -28,6 +28,7 @@ export class ApiService {
     worktracks: this.baseUrl + 'worktracks',
     classes: this.baseUrl + 'classes',
     testresult: this.baseUrl + 'TestResults',
-    student: this.baseUrl + 'students'
+    student: this.baseUrl + 'students',
+    statis: this.baseUrl + 'statistical'
   };
 }

@@ -1,34 +1,132 @@
 import { Component, OnInit } from '@angular/core';
-import { EChartOption } from 'echarts';
-declare const require: any;
+import { EChartOption,graphic} from 'echarts';
+import { StatisService, statistical, statispass } from 'src/app/services/statis.service';
+import { CourseService, Course } from 'src/app/services/course.service';
 @Component({
   selector: 'app-statistical',
   templateUrl: './statistical.component.html',
   styleUrls: ['./statistical.component.css']
 })
 export class StatisticalComponent implements OnInit {
-  // demo_html = require('!!html-loader!./statistical.component.html');
-  // demo_ts = require('!!raw-loader!./statistical.component.ts');
-
+  
   options: any;
-  constructor() { }
+  statics: statistical [];
+  chart = [];
+  avg = [];
+  courseName = [];
+  idCourse = [];
+  Name =['dau','rot'];
+  Pass= [] ;
+  Fail= [];
+  chartOption: EChartOption;
+  chartOptionPass: EChartOption;
+  course: Course = {} as Course;
+  courses: Course[];
+  statisPass: statispass = {} as statispass;
+  constructor(private statisService : StatisService, private courseService : CourseService) { }
 
   ngOnInit() {
-  }
-
-  chartOption: EChartOption = {
-    xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    this.statisService.getAll().subscribe(result=>{
+      this.statics = result.data;
+       this.avg = result.data.map(x=>x.avg);
+       this.courseName = result.data.map(x=>x.courseName);
+       this.idCourse = result.data.map(x=>x.idCourse);
+       this.chartOption={
+        color: ['#3398DB'],
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            
+            type : 'shadow'        
+        }
     },
-    yAxis: {
-      type: 'value'
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
     },
-    series: [{
-      data: [820, 932, 901, 934, 1290, 1330, 1320],
-      type: 'bar'
-    }]
+    xAxis : [
+        {
+            type : 'category',
+            data : this.courseName,
+            axisTick: {
+                alignWithLabel: true
+            }
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'AvgScore',
+            type:'bar',
+            barWidth: '60%',
+            data:this.avg
+        }
+    ]
+       };
+    });
+    this.loadData();
   }
   
-
+  loadData(){
+    this.courseService.getAll().subscribe(result => {
+      this.courses = result.data;
+    });
+  }
+  onChangeCourse(newValue){ 
+    this.course.courseId = newValue;
+    console.log(this.course.courseId);
+  }
+  search(){
+    this.statisService.getPass(this.course.courseId).subscribe(result=>{
+      this.Pass = result.data.map(x=>x.pass);
+      this.Fail = result.data.map(x=>x.fail);
+      this.chartOptionPass = 
+      {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:null
+        },
+        series: [
+            {
+                name:'Detail',
+                type:'pie',
+                radius: ['50%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    normal: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        show: false
+                    }
+                },
+                data:[
+                    this.Pass,
+                    this.Fail
+                ]
+            }
+        ]
+    };
+    });
+  }
 }

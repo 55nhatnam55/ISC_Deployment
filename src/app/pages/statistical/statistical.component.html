@@ -1,1 +1,44 @@
-<div echarts [options]="chartOption" class="chart"></div>
+<h2>Statistical</h2>
+<div class="box box-info">
+    <div class="box-header with-border">
+        <h3 class="box-title">Statistical Average of Courses</h3>
+    </div>
+    <form>
+        <div class="container-fluid">
+            <div class="box-body">
+                <input id="id" hidden />
+                <div echarts [options]="chartOption" class="chart"></div>
+            </div>
+        </div>
+    </form>
+    <div class="box-header with-border">
+        <h3 class="box-title">Statistical Ratio of Passing</h3>
+    </div>
+    <form>
+        <div class="container-fluid">
+            <div class="box-body">
+                <input id="id" hidden />
+                <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select Course</label>
+                        <select class="form-control" id="drdownCourse" [ngModel]="course.courseId" (ngModelChange)="onChangeCourse($event)"
+                          name="courseid">
+                          <option *ngFor="let option of courses" [ngValue]="option.courseId">{{option.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                          <br />
+                          <button type="button" class="btn btn-info" (click)="search()" style="margin-top:5px;">
+                            <span class="glyphicon glyphicon-search"></span> Search
+                          </button>
+                        </div>
+                      </div>
+                  </div>
+                  <div echarts [options]="chartOptionPass" class="chart"></div>
+            </div>
+        </div>
+    </form>
+</div>
